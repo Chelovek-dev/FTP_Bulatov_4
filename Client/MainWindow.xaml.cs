@@ -42,7 +42,7 @@ namespace Client
                 try
                 {
                     var response = SendCommand($"connect {login} {password}");
-                    if (response?.Command == "autorization")
+                    if (response?.Command == "authorization")
                     {
                         userId = int.Parse(response.Data);
                         MessageBox.Show("Подключение успешно!", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);

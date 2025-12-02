@@ -7,7 +7,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Common;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using Newtonsoft.Json;
 
 namespace Server
@@ -17,7 +17,7 @@ namespace Server
         public static List<User> Users = new List<User>();
         public static IPAddress IpAddress;
         public static int Port;
-        private static string connectionString = "Server=localhost;port=3306;Database=ftp_data;uid=root;pwd=;";
+        private static string connectionString = "Server=localhost;port=3306;Database=ftp_db;uid=root;pwd=;";
         public static bool AuthenticateUser(string login, string password)
         {
             using (MySqlConnection conn = new MySqlConnection(connectionString))
@@ -94,7 +94,7 @@ namespace Server
             try
             {
                 string Data = null;
-                byte[] Bytes = new byte[10485760];
+                byte[] Bytes = new byte[999739916];
                 int BytesRec = Handler.Receive(Bytes);
                 Data += Encoding.UTF8.GetString(Bytes, 0, BytesRec);
                 Console.Write("Сообщение от пользователя: " + Data + "\n");
@@ -110,7 +110,7 @@ namespace Server
                         if (AutorizationUser(DataMessage[1], DataMessage[2], out int userId))
                         {
                             userId = Users.Find(x => x.login == DataMessage[1] && x.password == DataMessage[2]).id;
-                            viewModelMessage = new ViewModelMessage("autorization", userId.ToString());
+                            viewModelMessage = new ViewModelMessage("authorization", userId.ToString());
                             string username = Users.Find(x => x.login == DataMessage[1] && x.password == DataMessage[2]).login;
                             string password = Users.Find(x => x.login == DataMessage[1] && x.password == DataMessage[2]).password;
                             LogCommandToDatabase(userId, ViewModelSend.Message.Split(' ')[0]);
@@ -220,7 +220,7 @@ namespace Server
 
         private static void LogCommandToDatabase(int userId, string command)
         {
-            string connectionString = "Server=localhost;port=3306;Database=ftp_data;uid=root;pwd=;";
+            string connectionString = "Server=localhost;port=3306;Database=ftp_db;uid=root;pwd=;";
 
             using (MySqlConnection conn = new MySqlConnection(connectionString))
             {
